@@ -1,0 +1,21 @@
+{
+  "metrics": {
+    "accuracy": 0.7078,
+    "precision": 0.6,
+    "recall": 0.5,
+    "f1_score": 0.5455,
+    "roc_auc": 0.813,
+    "train_samples": 614,
+    "test_samples": 154
+  },
+  "coefficients": {
+    "glucose": 1.1825,
+    "bmi": 0.6887,
+    "pregnancies": 0.3775,
+    "diabetes_pedigree": 0.2334,
+    "age": 0.1478,
+    "insulin": -0.0662,
+    "blood_pressure": -0.0441,
+    "skin_thickness": 0.0282
+  }
+}
