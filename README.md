@@ -183,5 +183,5 @@ MIT — built as an academic project, free to learn from and build on.
 ---
 
 <div align="center">
-<sub>Final year project. Educational purposes only — not a substitute for professional medical advice.</sub>
+<sub>Educational purposes only — not a substitute for professional medical advice.</sub>
 </div>
