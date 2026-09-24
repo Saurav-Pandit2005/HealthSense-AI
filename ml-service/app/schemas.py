@@ -1,5 +1,5 @@
 from typing import List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field  # pyright: ignore[reportMissingImports]
 
 
 class DiabetesRiskRequest(BaseModel):
@@ -28,3 +28,4 @@ class DiabetesRiskResponse(BaseModel):
     important_factors: List[FactorContribution]
     model_info: dict
     disclaimer: str
+    
