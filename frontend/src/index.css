@@ -2,10 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------
+   Theme tokens (space-separated RGB channels so Tailwind can apply
+   opacity, e.g. bg-surface/95, border-line/10).
+   Light = default (:root). Dark = html.dark
+------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  --c-ink: 15 23 42;
+  --c-muted: 91 107 130;
+  --c-canvas: 244 247 251;
+  --c-surface: 255 255 255;
+  --c-line: 0 0 0;
+  --c-track: 238 242 246; /* empty part of ring / progress tracks */
+  --c-shadow: 15 23 42;
+  --shadow-strength: 0.1;
+
+  --c-brand-50: 234 244 244;
+  --c-brand-100: 207 230 230;
+  --c-brand-200: 159 205 205;
+  --c-brand-300: 107 178 178;
+  --c-brand-400: 61 151 151;
+  --c-brand-500: 20 108 108;
+  --c-brand-600: 15 87 87;
+  --c-brand-700: 11 66 66;
+
+  --c-mint-50: 231 251 243;
+  --c-mint-100: 198 245 225;
+  --c-mint-400: 34 201 155;
+  --c-mint-500: 23 171 131;
+  --c-mint-600: 18 137 106;
+
+  --c-coral-50: 255 238 234;
+  --c-coral-100: 255 213 201;
+  --c-coral-400: 240 96 61;
+  --c-coral-500: 219 74 40;
+  --c-coral-600: 185 59 31;
+
+  --c-amber-50: 255 246 229;
+  --c-amber-100: 255 231 184;
+  --c-amber-400: 232 166 60;
+  --c-amber-500: 204 138 31;
+
+  --sel-bg: 198 245 225;
+  --sel-fg: 11 66 66;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  --c-ink: 230 237 247;
+  --c-muted: 147 163 186;
+  --c-canvas: 11 18 32;
+  --c-surface: 17 27 43;
+  --c-line: 255 255 255;
+  --c-track: 38 52 74;
+  --c-shadow: 0 0 0;
+  --shadow-strength: 0.35;
+
+  /* brand scale: 50-200 are dark tints (backgrounds/borders),
+     400-600 are light enough to read as text on dark surfaces */
+  --c-brand-50: 17 47 50;
+  --c-brand-100: 22 64 67;
+  --c-brand-200: 36 99 100;
+  --c-brand-300: 52 135 135;
+  --c-brand-400: 77 176 172;
+  --c-brand-500: 35 144 141;
+  --c-brand-600: 94 200 196;
+  --c-brand-700: 160 224 220;
+
+  --c-mint-50: 15 46 39;
+  --c-mint-100: 20 70 58;
+  --c-mint-400: 52 214 169;
+  --c-mint-500: 43 197 154;
+  --c-mint-600: 75 221 179;
+
+  --c-coral-50: 58 29 23;
+  --c-coral-100: 90 42 32;
+  --c-coral-400: 242 122 92;
+  --c-coral-500: 245 132 104;
+  --c-coral-600: 249 160 138;
+
+  --c-amber-50: 51 39 15;
+  --c-amber-100: 79 58 18;
+  --c-amber-400: 237 176 78;
+  --c-amber-500: 240 188 99;
+
+  --sel-bg: 22 64 67;
+  --sel-fg: 207 230 230;
+}
+
 html,
 body {
-  background-color: #f4f7fb;
-  color: #0f172a;
+  background-color: rgb(var(--c-canvas));
+  color: rgb(var(--c-ink));
 }
 
 body {
@@ -13,9 +104,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* smooth switch between themes (skipped for reduced-motion users below) */
+body,
+header,
+main,
+.bg-surface,
+.bg-canvas {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
 ::selection {
-  background: #c6f5e1;
-  color: #0b4242;
+  background: rgb(var(--sel-bg));
+  color: rgb(var(--sel-fg));
 }
 
 .scroll-thin::-webkit-scrollbar {
@@ -23,12 +123,12 @@ body {
   width: 6px;
 }
 .scroll-thin::-webkit-scrollbar-thumb {
-  background: #cfe6e6;
+  background: rgb(var(--c-brand-100));
   border-radius: 999px;
 }
 
 .focus-ring:focus-visible {
-  outline: 2px solid #146c6c;
+  outline: 2px solid rgb(var(--c-brand-500));
   outline-offset: 2px;
 }
 

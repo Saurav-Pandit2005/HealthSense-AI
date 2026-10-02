@@ -19,9 +19,12 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
-      minlength: 6,
+      minlength: [8, "Password must be at least 8 characters"],
       select: false, // never return password by default in queries
     },
+    // Forgot-password (token is stored hashed, never in plain text)
+    passwordResetToken: { type: String, select: false },
+    passwordResetExpires: { type: Date, select: false },
 
     // ---- Health Profile fields (used from Module 2 onward) ----
     age: { type: Number, min: 1, max: 120 },

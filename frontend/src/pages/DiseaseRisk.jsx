@@ -125,9 +125,9 @@ export default function DiseaseRisk() {
               <div className="flex items-center gap-5 mb-6">
                 <div
                   className="w-24 h-24 rounded-full flex items-center justify-center relative shrink-0"
-                  style={{ background: `conic-gradient(${RISK_COLORS[result.riskLevel]} ${result.riskPercentage * 3.6}deg, #EEF2F6 0deg)` }}
+                  style={{ background: `conic-gradient(${RISK_COLORS[result.riskLevel]} ${result.riskPercentage * 3.6}deg, rgb(var(--c-track)) 0deg)` }}
                 >
-                  <div className="w-[70px] h-[70px] rounded-full bg-white flex items-center justify-center">
+                  <div className="w-[70px] h-[70px] rounded-full bg-surface flex items-center justify-center">
                     <span className="font-mono text-lg font-bold text-ink">{result.riskPercentage}%</span>
                   </div>
                 </div>
@@ -176,7 +176,7 @@ export default function DiseaseRisk() {
         ) : (
           <div className="space-y-2">
             {history.slice(0, 10).map((r, i) => (
-              <div key={r.id || i} className="flex items-center justify-between border-b border-black/[0.04] last:border-0 py-2">
+              <div key={r.id || i} className="flex items-center justify-between border-b border-line/[0.04] last:border-0 py-2">
                 <span className="text-xs font-mono text-muted">
                   {r.createdAt ? new Date(r.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "—"}
                 </span>

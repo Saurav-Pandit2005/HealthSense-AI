@@ -178,7 +178,7 @@ export default function HealthReport() {
         The report below is exactly what will appear in the PDF. Tip: you can also use <strong>Ctrl+P → Save as PDF</strong> in your browser.
       </div>
 
-      <div className="bg-surface rounded-2xl shadow-card border border-black/[0.04] overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-card border border-line/[0.04] overflow-hidden">
         <div ref={reportRef} style={styles.page}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div>

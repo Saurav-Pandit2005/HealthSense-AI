@@ -40,6 +40,8 @@ export const authApi = {
   register: (payload) => call(api.post("/auth/register", payload)),
   login: (payload) => call(api.post("/auth/login", payload)),
   me: () => call(api.get("/auth/me")),
+  forgotPassword: (payload) => call(api.post("/auth/forgot-password", payload)),
+  resetPassword: (token, payload) => call(api.post(`/auth/reset-password/${token}`, payload)),
 };
 
 export const profileApi = {

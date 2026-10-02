@@ -6,6 +6,7 @@ import { mealApi } from "../api/client";
 import { Card } from "../components/ui/Card";
 import { ChipToggle, Button } from "../components/ui/Field";
 import { LoadingState, ErrorState, EmptyState } from "../components/ui/States";
+import { useChartColors } from "../context/ThemeContext";
 
 const PREFERENCES = [
   { value: "vegetarian", label: "Vegetarian" },
@@ -21,9 +22,9 @@ const MEAL_META = {
   dinner: { label: "Dinner", icon: Moon, bg: "bg-coral-50", border: "border-coral-100" },
 };
 
-const MACRO_COLORS = { protein: "#146C6C", carbs: "#22C99B", fat: "#E8A63C" };
-
 export default function MealPlanner() {
+  const chart = useChartColors();
+  const MACRO_COLORS = { protein: chart.protein, carbs: chart.carbs, fat: chart.fat };
   const [preference, setPreference] = useState("vegetarian");
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -102,12 +103,16 @@ export default function MealPlanner() {
               <div className="w-32 h-32 shrink-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={macroData} dataKey="value" innerRadius={38} outerRadius={60} paddingAngle={2}>
+                    <Pie data={macroData} dataKey="value" innerRadius={38} outerRadius={60} paddingAngle={2} stroke="none">
                       {macroData.map((m) => (
                         <Cell key={m.name} fill={MACRO_COLORS[m.name]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(v, n) => [`${v}%`, n]} />
+                    <Tooltip
+                      formatter={(v, n) => [`${v}%`, n]}
+                      contentStyle={{ background: chart.tooltipBg, border: `1px solid ${chart.tooltipBorder}`, borderRadius: 8, color: chart.tooltipText }}
+                      itemStyle={{ color: chart.tooltipText }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

@@ -10,6 +10,9 @@ import DiseaseRisk from "./pages/DiseaseRisk";
 import FitnessPlanner from "./pages/FitnessPlanner";
 import MealPlanner from "./pages/MealPlanner";
 import HealthReport from "./pages/HealthReport";
+import Landing from "./pages/Landing";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function App() {
   return (
@@ -18,6 +21,8 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route element={<RequireAuth />}>
             <Route path="/profile-setup" element={<ProfileSetup />} />
@@ -32,8 +37,8 @@ export default function App() {
             <Route path="/health-report" element={<HealthReport />} />
           </Route>
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

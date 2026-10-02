@@ -1,6 +1,6 @@
 export function Card({ title, eyebrow, icon: Icon, actions, children, className = "" }) {
   return (
-    <div className={`bg-surface rounded-2xl shadow-card border border-black/[0.04] p-6 ${className}`}>
+    <div className={`bg-surface rounded-2xl shadow-card border border-line/[0.04] p-6 ${className}`}>
       {(title || Icon) && (
         <div className="flex items-start justify-between mb-5 gap-3">
           <div>
@@ -30,7 +30,7 @@ const statTones = {
 export function StatCard({ label, value, unit, icon: Icon, tone = "brand", sub }) {
   const t = statTones[tone] || statTones.brand;
   return (
-    <div className="bg-surface rounded-xl border border-black/[0.04] shadow-card p-4 flex items-center gap-3 animate-fadeUp">
+    <div className="bg-surface rounded-xl border border-line/[0.04] shadow-card p-4 flex items-center gap-3 animate-fadeUp">
       <div className={`w-10 h-10 rounded-lg ${t.bg} ${t.text} flex items-center justify-center shrink-0 ring-1 ${t.ring}`}>
         {Icon && <Icon size={18} strokeWidth={2.2} />}
       </div>

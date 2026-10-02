@@ -15,7 +15,7 @@ const GOAL_LABELS = {
 
 const FOCUS_COLORS = {
   Cardio: { bg: "bg-brand-50", text: "text-brand-600", dot: "bg-brand-400" },
-  Rest: { bg: "bg-black/[0.03]", text: "text-muted", dot: "bg-muted" },
+  Rest: { bg: "bg-line/[0.03]", text: "text-muted", dot: "bg-muted" },
   HIIT: { bg: "bg-coral-50", text: "text-coral-500", dot: "bg-coral-400" },
   "Low-Impact Cardio": { bg: "bg-brand-50", text: "text-brand-600", dot: "bg-brand-400" },
 };
@@ -128,7 +128,7 @@ export default function FitnessPlanner() {
             return (
               <div
                 key={day.day}
-                className={`shrink-0 w-56 rounded-xl border p-4 ${isToday ? "border-brand-400 ring-2 ring-brand-100" : "border-black/[0.06]"} bg-surface`}
+                className={`shrink-0 w-56 rounded-xl border p-4 ${isToday ? "border-brand-400 ring-2 ring-brand-100" : "border-line/[0.06]"} bg-surface`}
               >
                 {isToday && <span className="inline-block text-[10px] font-bold text-brand-500 uppercase tracking-wide mb-1">Today</span>}
                 <p className="text-[11px] text-muted uppercase tracking-wide">{day.day.slice(0, 3)}</p>

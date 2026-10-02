@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { HeartPulse, Mail, Lock } from "lucide-react";
+import { LogoMark } from "../components/Logo";
+import { Mail } from "lucide-react";
+import PasswordInput from "../components/PasswordInput";
 import { useAuth } from "../context/AuthContext";
 import { Field, TextInput, Button } from "../components/ui/Field";
 import { ErrorState } from "../components/ui/States";
+import ThemeToggle from "../components/ThemeToggle";
 
 export default function Login() {
   const { login } = useAuth();
@@ -43,16 +46,15 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-canvas flex items-center justify-center px-4 py-10">
+      <ThemeToggle floating />
       <div className="w-full max-w-md animate-fadeUp">
         <div className="flex flex-col items-center mb-7">
-          <div className="w-12 h-12 rounded-xl bg-brand-500 text-white flex items-center justify-center mb-3">
-            <HeartPulse size={24} strokeWidth={2.3} />
-          </div>
+          <LogoMark size={52} className="mb-3" />
           <h1 className="font-display text-2xl font-bold text-ink">Welcome back</h1>
           <p className="text-sm text-muted mt-1">Log in to your HealthSense AI account</p>
         </div>
 
-        <div className="bg-surface rounded-2xl shadow-card border border-black/[0.04] p-7">
+        <div className="bg-surface rounded-2xl shadow-card border border-line/[0.04] p-7">
           <form onSubmit={handleSubmit} noValidate>
             <Field label="Email" htmlFor="email" error={errors.email} required>
               <div className="relative">
@@ -70,19 +72,13 @@ export default function Login() {
             </Field>
 
             <Field label="Password" htmlFor="password" error={errors.password} required>
-              <div className="relative">
-                <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-                <TextInput
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  error={errors.password}
-                  className="pl-9"
-                />
-              </div>
+              <PasswordInput id="password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} autoComplete="current-password" />
             </Field>
+            <div className="-mt-2 mb-4 text-right">
+              <Link to="/forgot-password" className="text-sm font-semibold text-brand-500 hover:underline focus-ring rounded">
+                Forgot password?
+              </Link>
+            </div>
 
             {apiError && (
               <div className="mb-4">

@@ -1,42 +1,45 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
       colors: {
-        ink: "#0F172A",
-        muted: "#5B6B82",
-        canvas: "#F4F7FB",
-        surface: "#FFFFFF",
+        ink: "rgb(var(--c-ink) / <alpha-value>)",
+        muted: "rgb(var(--c-muted) / <alpha-value>)",
+        canvas: "rgb(var(--c-canvas) / <alpha-value>)",
+        surface: "rgb(var(--c-surface) / <alpha-value>)",
+        // "line" = black in light mode, white in dark mode (for borders / subtle overlays)
+        line: "rgb(var(--c-line) / <alpha-value>)",
         brand: {
-          50: "#EAF4F4",
-          100: "#CFE6E6",
-          200: "#9FCDCD",
-          300: "#6BB2B2",
-          400: "#3D9797",
-          500: "#146C6C",
-          600: "#0F5757",
-          700: "#0B4242",
+          50: "rgb(var(--c-brand-50) / <alpha-value>)",
+          100: "rgb(var(--c-brand-100) / <alpha-value>)",
+          200: "rgb(var(--c-brand-200) / <alpha-value>)",
+          300: "rgb(var(--c-brand-300) / <alpha-value>)",
+          400: "rgb(var(--c-brand-400) / <alpha-value>)",
+          500: "rgb(var(--c-brand-500) / <alpha-value>)",
+          600: "rgb(var(--c-brand-600) / <alpha-value>)",
+          700: "rgb(var(--c-brand-700) / <alpha-value>)",
         },
         mint: {
-          50: "#E7FBF3",
-          100: "#C6F5E1",
-          400: "#22C99B",
-          500: "#17AB83",
-          600: "#12896A",
+          50: "rgb(var(--c-mint-50) / <alpha-value>)",
+          100: "rgb(var(--c-mint-100) / <alpha-value>)",
+          400: "rgb(var(--c-mint-400) / <alpha-value>)",
+          500: "rgb(var(--c-mint-500) / <alpha-value>)",
+          600: "rgb(var(--c-mint-600) / <alpha-value>)",
         },
         coral: {
-          50: "#FFEEEA",
-          100: "#FFD5C9",
-          400: "#F0603D",
-          500: "#DB4A28",
-          600: "#B93B1F",
+          50: "rgb(var(--c-coral-50) / <alpha-value>)",
+          100: "rgb(var(--c-coral-100) / <alpha-value>)",
+          400: "rgb(var(--c-coral-400) / <alpha-value>)",
+          500: "rgb(var(--c-coral-500) / <alpha-value>)",
+          600: "rgb(var(--c-coral-600) / <alpha-value>)",
         },
         amber: {
-          50: "#FFF6E5",
-          100: "#FFE7B8",
-          400: "#E8A63C",
-          500: "#CC8A1F",
+          50: "rgb(var(--c-amber-50) / <alpha-value>)",
+          100: "rgb(var(--c-amber-100) / <alpha-value>)",
+          400: "rgb(var(--c-amber-400) / <alpha-value>)",
+          500: "rgb(var(--c-amber-500) / <alpha-value>)",
         },
       },
       fontFamily: {
@@ -45,8 +48,8 @@ export default {
         mono: ["'JetBrains Mono'", "monospace"],
       },
       boxShadow: {
-        card: "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.10)",
-        cardHover: "0 4px 12px rgba(15,23,42,0.06), 0 18px 36px -16px rgba(15,23,42,0.16)",
+        card: "0 1px 2px rgb(var(--c-shadow) / 0.04), 0 8px 24px -12px rgb(var(--c-shadow) / var(--shadow-strength))",
+        cardHover: "0 4px 12px rgb(var(--c-shadow) / 0.06), 0 18px 36px -16px rgb(var(--c-shadow) / calc(var(--shadow-strength) + 0.06))",
       },
       keyframes: {
         fadeUp: {

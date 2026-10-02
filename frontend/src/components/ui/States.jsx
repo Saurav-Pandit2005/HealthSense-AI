@@ -29,5 +29,5 @@ export function ErrorState({ message }) {
 }
 
 export function InlineSkeleton({ className = "" }) {
-  return <div className={`animate-pulse bg-black/[0.06] rounded-lg ${className}`} />;
+  return <div className={`animate-pulse bg-line/[0.06] rounded-lg ${className}`} />;
 }

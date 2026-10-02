@@ -1,18 +1,56 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserRound, HeartPulse, Activity, Target, CheckCircle2 } from "lucide-react";
+import { UserRound, HeartPulse, Activity, Target, CheckCircle2, TrendingDown, Dumbbell, Scale, Zap, Cigarette, Wine } from "lucide-react";
 import { profileApi } from "../api/client";
 import { useAuth } from "../context/AuthContext";
-import { Field, TextInput, Select, TagInput, Toggle, Button } from "../components/ui/Field";
-import { Card } from "../components/ui/Card";
+import { Field, TextInput, Select, TagInput, Button } from "../components/ui/Field";
 import { ErrorState, LoadingState } from "../components/ui/States";
+import ThemeToggle from "../components/ThemeToggle";
 
 const FITNESS_GOALS = [
-  { value: "lose_weight", label: "Lose Weight" },
-  { value: "gain_muscle", label: "Gain Muscle" },
-  { value: "maintain", label: "Maintain Weight" },
-  { value: "general_fitness", label: "General Fitness" },
+  { value: "lose_weight", label: "Lose Weight", icon: TrendingDown },
+  { value: "gain_muscle", label: "Gain Muscle", icon: Dumbbell },
+  { value: "maintain", label: "Maintain Weight", icon: Scale },
+  { value: "general_fitness", label: "General Fitness", icon: Zap },
 ];
+
+function Section({ step, icon: Icon, title, subtitle, children }) {
+  return (
+    <section className="bg-surface rounded-2xl border border-line/[0.06] shadow-card p-5 flex flex-col">
+      <header className="flex items-center gap-3 mb-4">
+        <div className="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 ring-1 ring-brand-100 flex items-center justify-center shrink-0">
+          <Icon size={18} strokeWidth={2.2} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-display text-[15px] font-bold text-ink leading-tight">{title}</h2>
+          <p className="text-xs text-muted truncate">{subtitle}</p>
+        </div>
+        <span className="text-[11px] font-mono text-muted/70 tabular-nums shrink-0">{step} / 4</span>
+      </header>
+      <div className="flex-1">{children}</div>
+    </section>
+  );
+}
+
+function SwitchTile({ icon: Icon, label, checked, onChange }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors focus-ring ${
+        checked ? "border-brand-400 bg-brand-50" : "border-line/10 hover:border-brand-300"
+      }`}
+    >
+      <Icon size={18} className={checked ? "text-brand-600" : "text-muted"} />
+      <span className="flex-1 text-sm font-medium text-ink">{label}</span>
+      <span className={`relative w-10 h-6 rounded-full shrink-0 transition-colors ${checked ? "bg-brand-500" : "bg-line/15"}`}>
+        <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-4" : ""}`} />
+      </span>
+    </button>
+  );
+}
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -125,19 +163,20 @@ export default function ProfileSetup() {
   }
 
   return (
-    <div className="min-h-screen bg-canvas px-4 py-10">
-      <div className="max-w-2xl mx-auto animate-fadeUp">
-        <div className="text-center mb-7">
-          <div className="w-12 h-12 rounded-xl bg-brand-500 text-white flex items-center justify-center mx-auto mb-3">
-            <UserRound size={22} />
+    <div className="min-h-screen bg-canvas px-4 py-6 flex items-center">
+      <ThemeToggle floating />
+      <div className="w-full max-w-2xl lg:max-w-6xl mx-auto animate-fadeUp">
+        <div className="text-center mb-5">
+          <div className="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center mx-auto mb-2">
+            <UserRound size={20} />
           </div>
           <h1 className="font-display text-2xl font-bold text-ink">Complete Your Health Profile</h1>
           <p className="text-sm text-muted mt-1">This helps us personalize your dashboard, meal plans, and risk assessments.</p>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          <Card title="Basic Info" eyebrow="Step 1" icon={UserRound}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+        <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Section step={1} icon={UserRound} title="Basic Info" subtitle="Tell us a bit about yourself">
+            <div className="grid grid-cols-2 xl:grid-cols-3 gap-x-3 -mb-4">
               <Field label="Age" htmlFor="age" error={errors.age} required>
                 <TextInput id="age" type="number" placeholder="25" value={age} onChange={(e) => setAge(e.target.value)} error={errors.age} />
               </Field>
@@ -154,7 +193,13 @@ export default function ProfileSetup() {
               <Field label="Weight (kg)" htmlFor="weight" error={errors.weightKg} required>
                 <TextInput id="weight" type="number" placeholder="70" value={weightKg} onChange={(e) => setWeightKg(e.target.value)} error={errors.weightKg} />
               </Field>
-              <Field label="Blood Group" hint="Optional">
+              <Field
+                label={
+                  <>
+                    Blood Group <span className="text-xs font-normal text-muted">(optional)</span>
+                  </>
+                }
+              >
                 <Select value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value)}>
                   <option value="">Not specified</option>
                   {BLOOD_GROUPS.map((bg) => (
@@ -165,47 +210,63 @@ export default function ProfileSetup() {
                 </Select>
               </Field>
             </div>
-          </Card>
+          </Section>
 
-          <Card title="Health Background" eyebrow="Step 2" icon={HeartPulse}>
-            <Field label="Allergies" hint="Type and press Enter to add">
-              <TagInput tags={allergies} onChange={setAllergies} placeholder="e.g. Peanuts, Dust" />
-            </Field>
-            <Field label="Medical History" hint="Type and press Enter to add">
-              <TagInput tags={medicalHistory} onChange={setMedicalHistory} placeholder="e.g. Asthma, Hypertension" />
-            </Field>
-          </Card>
-
-          <Card title="Lifestyle" eyebrow="Step 3" icon={Activity}>
-            <div className="flex flex-wrap gap-6">
-              <Toggle checked={smoking} onChange={setSmoking} label="I currently smoke" />
-              <Toggle checked={alcohol} onChange={setAlcohol} label="I drink alcohol" />
+          <Section step={2} icon={HeartPulse} title="Health Background" subtitle="Allergies and past conditions">
+            <div className="-mb-4">
+              <Field label="Allergies" hint="Type and press Enter to add">
+                <TagInput tags={allergies} onChange={setAllergies} placeholder="e.g. Peanuts, Dust" />
+              </Field>
+              <Field label="Medical History" hint="Type and press Enter to add">
+                <TagInput tags={medicalHistory} onChange={setMedicalHistory} placeholder="e.g. Asthma, Hypertension" />
+              </Field>
             </div>
-          </Card>
+          </Section>
 
-          <Card title="Fitness Goal" eyebrow="Step 4" icon={Target}>
+          <Section step={3} icon={Activity} title="Lifestyle" subtitle="Habits that affect your risk score">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <SwitchTile icon={Cigarette} label="I currently smoke" checked={smoking} onChange={setSmoking} />
+              <SwitchTile icon={Wine} label="I drink alcohol" checked={alcohol} onChange={setAlcohol} />
+            </div>
+          </Section>
+
+          <Section step={4} icon={Target} title="Fitness Goal" subtitle="What do you want to achieve?">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {FITNESS_GOALS.map((g) => (
-                <button
-                  key={g.value}
-                  type="button"
-                  onClick={() => setFitnessGoal(g.value)}
-                  className={`rounded-xl border-2 px-3 py-4 text-center text-sm font-semibold transition-all focus-ring ${
-                    fitnessGoal === g.value ? "border-brand-500 bg-brand-50 text-brand-600" : "border-black/10 text-muted hover:border-brand-200"
-                  }`}
-                >
-                  {g.label}
-                </button>
-              ))}
+              {FITNESS_GOALS.map((g) => {
+                const selected = fitnessGoal === g.value;
+                return (
+                  <button
+                    key={g.value}
+                    type="button"
+                    onClick={() => setFitnessGoal(g.value)}
+                    aria-pressed={selected}
+                    className={`flex flex-col items-center justify-center gap-1.5 rounded-xl border-2 px-2 py-3 text-center text-[13px] leading-tight font-semibold transition-all focus-ring ${
+                      selected ? "border-brand-500 bg-brand-50 text-brand-600" : "border-line/10 text-muted hover:border-brand-300 hover:text-ink"
+                    }`}
+                  >
+                    <g.icon size={20} strokeWidth={2} />
+                    {g.label}
+                  </button>
+                );
+              })}
             </div>
             {errors.fitnessGoal && <p className="mt-3 text-xs text-coral-500 font-medium">{errors.fitnessGoal}</p>}
-          </Card>
+          </Section>
 
-          {apiError && <ErrorState message={apiError} />}
+          {apiError && (
+            <div className="lg:col-span-2">
+              <ErrorState message={apiError} />
+            </div>
+          )}
 
-          <Button type="submit" loading={loading} className="w-full !py-3">
-            Save Profile
-          </Button>
+          <div className="lg:col-span-2 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p className="text-xs text-muted">
+              <span className="text-coral-500">*</span> Required fields
+            </p>
+            <Button type="submit" loading={loading} className="w-full sm:w-auto sm:min-w-[240px] !py-3">
+              Save Profile
+            </Button>
+          </div>
         </form>
       </div>
     </div>
