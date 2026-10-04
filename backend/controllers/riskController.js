@@ -1,4 +1,5 @@
 const axios = require("axios");
+const mongoose = require("mongoose");
 const DiseaseRiskResult = require("../models/DiseaseRiskResult");
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://localhost:8000";
@@ -78,5 +79,21 @@ exports.getRiskHistory = async (req, res) => {
     res.status(200).json({ results });
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch risk history", error: err.message });
+  }
+};
+
+// @route  DELETE /api/risk/:id   (protected) - delete one past assessment of the logged-in user
+exports.deleteRiskResult = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: "Invalid assessment id" });
+    }
+    const deleted = await DiseaseRiskResult.findOneAndDelete({ _id: req.params.id, user: req.user._id });
+    if (!deleted) {
+      return res.status(404).json({ message: "Assessment not found" });
+    }
+    res.status(200).json({ message: "Assessment deleted" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete assessment", error: err.message });
   }
 };

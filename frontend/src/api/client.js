@@ -62,6 +62,7 @@ export const dashboardApi = {
 export const riskApi = {
   predictDiabetes: (payload) => call(api.post("/risk/diabetes", payload)),
   history: () => call(api.get("/risk/history")),
+  remove: (id) => call(api.delete(`/risk/${id}`)),
 };
 
 export const fitnessApi = {
