@@ -11,6 +11,8 @@ import { LoadingState, ErrorState } from "../components/ui/States";
 
 const GOAL_LABELS = { lose_weight: "Lose Weight", gain_muscle: "Gain Muscle", maintain: "Maintain Weight", general_fitness: "General Fitness" };
 const PAGE_W = 794; // A4 width at 96 dpi, so the preview and the PDF page match
+// A4 height at 96 dpi is 1122.5px. Kept slightly below so the image never spills onto a blank 2nd PDF page.
+const PAGE_H = 1120;
 
 // One failing endpoint (e.g. no risk assessment yet) shouldn't block the whole report
 async function safeFetch(promise) {
@@ -25,7 +27,8 @@ async function safeFetch(promise) {
 // because html2canvas is unreliable with utility classes and modern CSS colour functions.
 const font = "'Georgia', 'Times New Roman', serif";
 const S = {
-  page: { width: PAGE_W, boxSizing: "border-box", fontFamily: font, color: "#1a1a1a", background: "#ffffff", padding: "34px 38px 28px" },
+  // minHeight + flex column = the report is always a full A4 page, with the footer pinned to the bottom
+  page: { width: PAGE_W, minHeight: PAGE_H, display: "flex", flexDirection: "column", boxSizing: "border-box", fontFamily: font, color: "#1a1a1a", background: "#ffffff", padding: "34px 38px 28px" },
   title: { fontFamily: font, fontSize: 25, fontWeight: 700, margin: 0, color: "#0F5757" },
   small: { fontFamily: font, fontSize: 12, color: "#555555", margin: "3px 0 0" },
   rule: { border: "none", borderTop: "2px solid #0F5757", margin: "14px 0 16px" },
@@ -40,7 +43,7 @@ const S = {
   kpiSub: { fontFamily: font, fontSize: 11, color: "#555555", margin: 0 },
   th: { textAlign: "left", padding: "3px 6px", borderBottom: "1px solid #999999", fontWeight: 700, fontSize: 11.5 },
   td: { padding: "3px 6px", borderBottom: "1px solid #e8e8e8", color: "#333333", fontSize: 11.5 },
-  disclaimer: { fontFamily: font, fontSize: 10.5, color: "#777777", margin: "16px 0 0", paddingTop: 10, borderTop: "1px solid #cccccc", lineHeight: 1.45 },
+  disclaimer: { fontFamily: font, fontSize: 10.5, color: "#777777", margin: 0, paddingTop: 10, borderTop: "1px solid #cccccc", lineHeight: 1.45 },
 };
 
 const Section = ({ title, children }) => (
@@ -110,10 +113,27 @@ const Info = ({ label, value, span }) => (
 );
 const Grid = ({ cols = 3, children }) => <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: "12px 14px" }}>{children}</div>;
 
+// One meal column: shows up to 3 ideas instead of only the first one
+const MealCol = ({ label, items }) => (
+  <div style={{ minWidth: 0 }}>
+    <p style={{ fontFamily: font, fontSize: 9.5, letterSpacing: "0.08em", textTransform: "uppercase", color: "#7a8a8a", margin: 0 }}>{label}</p>
+    {items?.length ? (
+      items.slice(0, 3).map((m, i) => (
+        <p key={i} style={{ fontFamily: font, fontSize: 12, color: "#1a1a1a", margin: "3px 0 0", lineHeight: 1.3 }}>
+          {i + 1}. {m}
+        </p>
+      ))
+    ) : (
+      <p style={{ fontFamily: font, fontSize: 12, color: "#1a1a1a", margin: "2px 0 0" }}>—</p>
+    )}
+  </div>
+);
+
 function Report({ user, today, profile, dashboard, latestRisk, riskHistory = [], fitnessPlan, mealPlan }) {
   const log = dashboard?.todayLog;
   const score = dashboard?.healthScore;
   const hasScore = score !== null && score !== undefined;
+  const summary = buildOverview({ profile, dashboard, latestRisk, fitnessPlan, mealPlan });
   // "Number of pregnancies" doesn't apply to male profiles, so leave it out of the factors
   const topFactors = (latestRisk?.importantFactors || [])
     .filter((f) => !(profile?.gender === "male" && /pregnan/i.test(f.factor)))
@@ -226,10 +246,10 @@ function Report({ user, today, profile, dashboard, latestRisk, riskHistory = [],
               </Grid>
             </div>
             <Grid cols={4}>
-              <Info label="Breakfast" value={mealPlan.meals.breakfast?.[0]} />
-              <Info label="Lunch" value={mealPlan.meals.lunch?.[0]} />
-              <Info label="Snack" value={mealPlan.meals.snack?.[0]} />
-              <Info label="Dinner" value={mealPlan.meals.dinner?.[0]} />
+              <MealCol label="Breakfast" items={mealPlan.meals.breakfast} />
+              <MealCol label="Lunch" items={mealPlan.meals.lunch} />
+              <MealCol label="Snack" items={mealPlan.meals.snack} />
+              <MealCol label="Dinner" items={mealPlan.meals.dinner} />
             </Grid>
           </>
         ) : (
@@ -237,7 +257,25 @@ function Report({ user, today, profile, dashboard, latestRisk, riskHistory = [],
         )}
       </Section>
 
-      <p style={{ ...S.disclaimer, margin: "6px 0 0" }}>For information only. This report is not a substitute for professional medical advice, diagnosis or treatment.</p>
+      <Section title="Summary">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 32px", alignItems: "start" }}>
+          <ul style={{ margin: 0, paddingLeft: 18, listStyle: "disc" }}>
+            {summary.points.map((t, i) => (
+              <li key={i} style={{ fontFamily: font, fontSize: 12.5, lineHeight: 1.45, color: "#333333", marginBottom: 3 }}>
+                {t}
+              </li>
+            ))}
+          </ul>
+          <div style={S.kpi}>
+            <p style={S.kpiLabel}>Conclusion</p>
+            <p style={{ fontFamily: font, fontSize: 12.5, lineHeight: 1.45, color: "#1a1a1a", margin: "4px 0 0" }}>{summary.conclusion}</p>
+          </div>
+        </div>
+      </Section>
+
+      {/* pushes the disclaimer to the bottom of the A4 page */}
+      <div style={{ flex: 1, minHeight: 10 }} />
+      <p style={S.disclaimer}>For information only. This report is not a substitute for professional medical advice, diagnosis or treatment.</p>
     </div>
   );
 }
@@ -252,7 +290,7 @@ export default function HealthReport() {
   const [downloadError, setDownloadError] = useState(null);
   const [fit, setFit] = useState(true); // opens in "Fit to screen"
   const [scale, setScale] = useState(1);
-  const [paperH, setPaperH] = useState(1000);
+  const [paperH, setPaperH] = useState(PAGE_H);
 
   useEffect(() => {
     Promise.all([safeFetch(profileApi.get()), safeFetch(dashboardApi.summary()), safeFetch(riskApi.history()), safeFetch(fitnessApi.plan()), safeFetch(mealApi.plan("vegetarian"))]).then(
@@ -266,21 +304,32 @@ export default function HealthReport() {
   // Scale the on-screen preview so the whole page fits the window (no scrolling); "100%" shows it full size
   useLayoutEffect(() => {
     if (!data) return;
+    let lastW = window.innerWidth;
     function calc() {
-      const h = reportRef.current?.offsetHeight || 1000;
+      const h = reportRef.current?.offsetHeight || PAGE_H;
       setPaperH(h);
       if (!fit) return setScale(1);
       const availW = wrapRef.current?.clientWidth || PAGE_W;
+      if (availW < 768) {
+        // phone / small tablet: fit the page width and let the page scroll down naturally
+        return setScale(Math.max(0.3, Math.min(1, availW / PAGE_W)));
+      }
       const availH = window.innerHeight - 190;
       const paperAvail = availW >= 1000 ? availW - 340 - 24 : availW;
       setScale(Math.max(0.4, Math.min(1, paperAvail / PAGE_W, availH / h)));
     }
+    function onResize() {
+      // phones: the URL bar showing/hiding only changes the height, ignore it so the page doesn't jump
+      if (window.innerWidth === lastW && window.innerWidth < 768) return;
+      lastW = window.innerWidth;
+      calc();
+    }
     calc();
-    window.addEventListener("resize", calc);
+    window.addEventListener("resize", onResize);
     const ro = typeof ResizeObserver !== "undefined" && reportRef.current ? new ResizeObserver(calc) : null;
     if (ro) ro.observe(reportRef.current);
     return () => {
-      window.removeEventListener("resize", calc);
+      window.removeEventListener("resize", onResize);
       if (ro) ro.disconnect();
     };
   }, [data, fit]);
@@ -329,10 +378,10 @@ export default function HealthReport() {
           </h1>
           <p className="text-sm text-muted mt-1">A one-page summary of your health data. The preview is exactly what the PDF contains.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <ChipToggle selected={fit} onClick={() => setFit(true)}>Fit to screen</ChipToggle>
           <ChipToggle selected={!fit} onClick={() => setFit(false)}>100%</ChipToggle>
-          <Button onClick={handleDownload} loading={downloading}>
+          <Button onClick={handleDownload} loading={downloading} className="w-full sm:w-auto">
             <Download size={16} /> Download PDF
           </Button>
         </div>
@@ -340,10 +389,14 @@ export default function HealthReport() {
 
       {downloadError && <ErrorState message={downloadError} />}
 
+      <p className="sm:hidden text-xs text-muted -mt-1">
+        {fit ? "Tip: pinch to zoom the preview, or tap 100% and swipe sideways to read it full size." : "Swipe the page sideways to read it. Tap “Fit to screen” to see the whole page."}
+      </p>
+
       {/* Preview (left) + overview (right) */}
       <div ref={wrapRef} style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "stretch" }}>
-        <div style={{ flex: "0 0 auto", maxWidth: "100%", display: "flex", ...(fit ? {} : { overflowX: "auto", overflowY: "hidden" }) }}>
-          <div style={{ position: "relative", width: PAGE_W * scale, minHeight: paperH * scale, background: "#fff", borderRadius: 4, overflow: "hidden", boxShadow: "0 10px 40px -12px rgba(0,0,0,0.45)" }}>
+        <div style={{ flex: "0 0 auto", maxWidth: "100%", minWidth: 0, display: "flex", ...(fit ? {} : { overflowX: "auto", overflowY: "hidden" }) }}>
+          <div style={{ position: "relative", flexShrink: 0, width: PAGE_W * scale, minHeight: paperH * scale, background: "#fff", borderRadius: 4, overflow: "hidden", boxShadow: "0 10px 40px -12px rgba(0,0,0,0.45)" }}>
             <div style={{ position: "absolute", top: 0, left: 0, width: PAGE_W, transform: `scale(${scale})`, transformOrigin: "top left" }}>
               <Report {...props} />
             </div>
@@ -353,7 +406,7 @@ export default function HealthReport() {
         <div style={{ flex: "1 1 320px", minWidth: 0, display: "flex", flexDirection: "column" }}>
           <Card title="About this report" eyebrow="Overview" icon={ClipboardCheck} className="flex-1">
             <p className="text-xs text-muted mb-4">Built from your account data · <span className="font-semibold text-ink">{overview.ready} of {overview.included.length}</span> sections have data.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 28 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))", gap: 28 }}>
               <div>
                 <h3 className="text-sm font-semibold text-ink mb-3">What's included</h3>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 10 }}>
