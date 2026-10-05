@@ -250,7 +250,7 @@ export default function HealthReport() {
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState(null);
-  const [fit, setFit] = useState(false); // opens at 100%
+  const [fit, setFit] = useState(true); // opens in "Fit to screen"
   const [scale, setScale] = useState(1);
   const [paperH, setPaperH] = useState(1000);
 
