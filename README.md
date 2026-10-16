@@ -6,8 +6,6 @@
 
 Track your daily vitals, get an explainable ML-based diabetes risk check, and receive personalized fitness and meal plans, all in one dashboard.
 
-[**Live Demo**](https://health-sense-ai-x.vercel.app) · [**GitHub**](https://github.com/Saurav-Pandit2005/HealthSense-AI)
-
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
 ![Tailwind](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
@@ -15,6 +13,14 @@ Track your daily vitals, get an explainable ML-based diabetes risk check, and re
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-Logistic%20Regression-F7931E?logo=scikitlearn&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
+<a href="https://health-sense-ai-x.vercel.app">
+  <img src="https://img.shields.io/badge/Live-Demo-3B82F6?style=for-the-badge&logo=vercel&logoColor=white"/>
+</a>
+
+<a href="https://github.com/Saurav-Pandit2005/HealthSense-AI">
+  <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white"/>
+</a>
 
 </div>
 
@@ -230,7 +236,7 @@ All routes except register, login, forgot-password and reset-password require an
 
 ## Author
 
-Built by **Saurav Pandit**. [GitHub](https://github.com/Saurav-Pandit2005)
+**Built by [Saurav Pandit](https://github.com/Saurav-Pandit2005)**
 
 ## License
 
